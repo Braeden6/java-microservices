@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "eureka"
+		},
+		{
+			"name": "food",
+			"path": "food"
+		},
+		{
+			"name": "customer",
+			"path": "customer"
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "automatic",
+		"java.compile.nullAnalysis.mode": "automatic"
+	}
+}
