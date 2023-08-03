@@ -21,15 +21,17 @@ public class FoodServiceImpl implements FoodService {
 
     @Override
     public FoodEntity findById(int theId) {
-        return null;
+        return foodDAO.findById(theId);
     }
 
     @Override
     public void save(FoodEntity theFood) {
+        foodDAO.save(theFood);
     }
 
     @Override
     public void deleteById(int theId) {
+        foodDAO.deleteById(theId);
     }
 
     @Override

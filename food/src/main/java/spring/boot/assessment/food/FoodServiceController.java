@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 public class FoodServiceController {
@@ -46,7 +49,12 @@ public class FoodServiceController {
         return foodList;
     }
 
-    // top 3 selling food
+    @PutMapping("/food/{id}")
+    public FoodEntity putMethodName(@PathVariable String id, @RequestBody FoodEntity entity) {
+        foodService.save(entity);
+        return entity;
+    }
+
 
 
     

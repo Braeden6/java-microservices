@@ -33,27 +33,33 @@ public class CustomerServiceController {
         return customerService.findAll();
     }
 
+    // return the top {amount} food for all customers
     @GetMapping("/getTopFood/{amount}")
     public List<FoodEntity> getTopFood(@PathVariable int amount) {
-        logger.info("Customer Service - get top {} food from food service", amount);
-        List<CustomerEntity> customerList = customerService.findAll();
-        List<FoodEntity> foodList = new ArrayList<>();
-        for (CustomerEntity customer : customerList) {
-            foodList.addAll(customer.getFood());
-        }
-        Set<FoodEntity> foodSet = new HashSet<>(foodList);
-        Map<FoodEntity, Long> foodMap = foodSet.stream().collect(Collectors.toMap(Function.identity(), food -> foodList.stream().filter(f -> f.equals(food)).count()));
-        List<FoodEntity> topFoodList = new ArrayList<>();
-        for (int i = 0; i < amount; i++) {
-            if (foodMap.isEmpty()) {
-                break;
-            }
-            FoodEntity food = foodMap.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey();
-            topFoodList.add(food);
-            foodMap.remove(food);
-        }
-        System.out.print(foodMap);
-        return topFoodList;
+        // use logger to log the info of the request
+        logger.info("Customer Service - get top {} food", amount);
+        // get a list of all food from each of the customers
+        List<FoodEntity> foodList = customerService.findAll().stream()
+            .map(customer -> customer.getFood())
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
+        // get the frequency of each food in the list
+        Map<FoodEntity, Long> foodFrequency = foodList.stream()
+            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+        // map the frequency to the food to the food entity and sort the list from highest to lowest
+        List<FoodEntity> sortedFoodList = foodFrequency.entrySet().stream()
+            .sorted(Map.Entry.<FoodEntity, Long>comparingByValue().reversed())
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toList());
+        // print the frequency of each food with a header
+        System.out.println("Food Frequency");
+        foodFrequency.forEach((food, frequency) -> System.out.println(food.getDescription() + " - " + frequency));
+        // print the top {amount} food with a header
+        System.out.println("Top " + amount + " Food");
+        sortedFoodList.subList(0, amount).forEach(food -> System.out.println(food.getDescription()));
+        // return the top {amount} food
+        return sortedFoodList.subList(0, amount);
+
     }
 
 
